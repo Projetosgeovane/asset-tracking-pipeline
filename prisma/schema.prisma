@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Equipment {
+  id          String    @id @default(uuid())
+  name        String?
+  description String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  devices Device[]
+
+  @@map("equipment")
+}
+
+model Device {
+  id          String    @id
+  name        String?
+  description String?
+  status      String    @default("offline")
+  lastSeenAt  DateTime? @map("last_seen_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  equipmentId String?     @unique @map("equipment_id")
+  equipment   Equipment?  @relation(fields: [equipmentId], references: [id])
+  telemetry   Telemetry[]
+
+  @@map("devices")
+}
+
+model Telemetry {
+  id          String   @id @default(uuid())
+  time        DateTime @map("time")
+  deviceId    String   @map("device_id")
+  device      Device   @relation(fields: [deviceId], references: [id])
+  lat         Float    @map("lat")
+  long        Float    @map("long")
+  temperature Float    @map("temperature")
+  humidity    Float    @map("humidity")
+  battery     Float    @map("battery")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([deviceId, time])
+  @@map("telemetry")
+}
