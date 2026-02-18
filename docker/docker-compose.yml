@@ -1,0 +1,25 @@
+services:
+  redis:
+    image: redis:8.6.0
+    container_name: pipeline-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg17
+    container_name: pipeline-timescaledb
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=pipeline
+    volumes:
+      - timescaledb_data:/var/lib/postgresql/data
+
+volumes:
+  redis_data:
+  timescaledb_data:
