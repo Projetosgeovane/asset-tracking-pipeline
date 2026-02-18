@@ -1,0 +1,26 @@
+{
+  "name": "@asset-tracking-pipeline/ingestion-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@asset-tracking-pipeline/ingestion"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/ingestion-e2e/jest.config.cts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "@asset-tracking-pipeline/ingestion:build",
+          "@asset-tracking-pipeline/ingestion:serve"
+        ]
+      }
+    }
+  }
+}
